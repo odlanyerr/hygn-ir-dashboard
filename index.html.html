@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HYGN IJ — Investor Relations Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0d12;
+    --surface: #111520;
+    --surface2: #161c2a;
+    --border: rgba(255,255,255,0.07);
+    --accent: #00e5a0;
+    --accent2: #3d8bff;
+    --danger: #ff4d6a;
+    --warn: #ffb820;
+    --text: #e8edf5;
+    --muted: #5a6480;
+    --gold: #f5c842;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background texture */
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background: radial-gradient(ellipse at 20% 20%, rgba(0,229,160,0.04) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 80%, rgba(61,139,255,0.04) 0%, transparent 60%);
+    pointer-events:none; z-index:0;
+  }
+
+  .wrapper { position:relative; z-index:1; padding:24px 28px; max-width:1600px; margin:0 auto; }
+
+  /* HEADER */
+  header {
+    display:flex; justify-content:space-between; align-items:flex-start;
+    margin-bottom:32px; padding-bottom:20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .logo-block { display:flex; align-items:center; gap:16px; }
+  .logo-badge {
+    width:48px; height:48px; border-radius:12px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Syne',sans-serif; font-weight:800; font-size:14px; color:#000;
+    letter-spacing:-0.5px;
+  }
+  .logo-text h1 {
+    font-family:'Syne',sans-serif; font-weight:800; font-size:22px;
+    letter-spacing:-0.5px;
+  }
+  .logo-text span { font-size:11px; color:var(--muted); letter-spacing:2px; text-transform:uppercase; }
+  .header-meta { text-align:right; }
+  .last-update { font-size:11px; color:var(--muted); }
+  .last-update strong { color:var(--accent); }
+  .date-badge {
+    margin-top:6px;
+    display:inline-block; padding:4px 12px;
+    border:1px solid var(--border); border-radius:20px;
+    font-size:11px; color:var(--muted);
+    background: var(--surface);
+  }
+
+  /* KPI ROW */
+  .kpi-row {
+    display:grid; grid-template-columns: repeat(4, 1fr); gap:16px;
+    margin-bottom:24px;
+  }
+  .kpi-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius:16px; padding:20px 22px;
+    position:relative; overflow:hidden;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .kpi-card:hover { border-color: rgba(0,229,160,0.3); transform:translateY(-2px); }
+  .kpi-card::after {
+    content:''; position:absolute; top:0; left:0; right:0; height:2px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+  }
+  .kpi-card.blue::after { background: linear-gradient(90deg, var(--accent2), transparent); }
+  .kpi-card.gold::after { background: linear-gradient(90deg, var(--gold), transparent); }
+  .kpi-card.red::after { background: linear-gradient(90deg, var(--danger), transparent); }
+
+  .kpi-label { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:2px; margin-bottom:10px; }
+  .kpi-value { font-family:'Syne',sans-serif; font-weight:700; font-size:26px; letter-spacing:-1px; }
+  .kpi-value.green { color:var(--accent); }
+  .kpi-value.blue { color:var(--accent2); }
+  .kpi-value.gold { color:var(--gold); }
+  .kpi-value.red { color:var(--danger); }
+  .kpi-sub { font-size:10px; color:var(--muted); margin-top:6px; }
+  .kpi-change { display:inline-flex; align-items:center; gap:4px; font-size:11px; margin-top:8px; }
+  .kpi-change.up { color:var(--accent); }
+  .kpi-change.down { color:var(--danger); }
+
+  /* MAIN GRID */
+  .main-grid {
+    display:grid; grid-template-columns: 1fr 340px; gap:20px;
+    margin-bottom:20px;
+  }
+
+  /* TABLE */
+  .table-card {
+    background:var(--surface); border:1px solid var(--border); border-radius:16px;
+    overflow:hidden;
+  }
+  .card-header {
+    display:flex; justify-content:space-between; align-items:center;
+    padding:16px 20px; border-bottom:1px solid var(--border);
+  }
+  .card-title {
+    font-family:'Syne',sans-serif; font-weight:700; font-size:13px;
+    text-transform:uppercase; letter-spacing:1.5px;
+  }
+  .card-badge {
+    font-size:10px; padding:3px 10px; border-radius:20px;
+    background: rgba(0,229,160,0.1); color:var(--accent);
+    border: 1px solid rgba(0,229,160,0.2);
+  }
+  .card-badge.blue { background: rgba(61,139,255,0.1); color:var(--accent2); border-color:rgba(61,139,255,0.2); }
+
+  table { width:100%; border-collapse:collapse; }
+  thead th {
+    font-size:9px; text-transform:uppercase; letter-spacing:2px;
+    color:var(--muted); padding:10px 14px; text-align:right;
+    border-bottom:1px solid var(--border); white-space:nowrap;
+  }
+  thead th:first-child { text-align:left; }
+  thead th:nth-child(2) { text-align:left; }
+  tbody tr {
+    border-bottom:1px solid var(--border);
+    transition:background 0.15s;
+  }
+  tbody tr:hover { background: rgba(255,255,255,0.02); }
+  tbody tr:last-child { border-bottom:none; }
+  td { padding:9px 14px; font-size:11px; text-align:right; white-space:nowrap; }
+  td:first-child { text-align:left; font-size:11px; color:var(--muted); width:28px; }
+  td:nth-child(2) { text-align:left; font-size:11.5px; color:var(--text); font-weight:500; max-width:180px; overflow:hidden; text-overflow:ellipsis; }
+
+  .rank-top { color:var(--gold); font-weight:700; font-family:'Syne',sans-serif; }
+  .shares-val { color:var(--text); }
+  .change-pos { color:var(--accent); }
+  .change-neg { color:var(--danger); }
+  .change-zero { color:var(--muted); }
+
+  /* highlight rows */
+  .row-gold td:nth-child(2) { color:var(--gold) !important; }
+  .row-green td:nth-child(2) { color:var(--accent) !important; }
+  .row-cyan td { background: rgba(0,229,160,0.04); }
+
+  /* SIDE PANEL */
+  .side-panel { display:flex; flex-direction:column; gap:16px; }
+
+  .mini-card {
+    background:var(--surface); border:1px solid var(--border); border-radius:16px;
+    padding:18px 20px;
+  }
+  .mini-title { font-size:10px; text-transform:uppercase; letter-spacing:2px; color:var(--muted); margin-bottom:14px; }
+
+  /* Concentration bar */
+  .conc-list { display:flex; flex-direction:column; gap:8px; }
+  .conc-item { }
+  .conc-header { display:flex; justify-content:space-between; margin-bottom:4px; }
+  .conc-name { font-size:10px; color:var(--text); }
+  .conc-pct { font-size:10px; color:var(--accent); font-weight:500; }
+  .conc-bar-bg { height:3px; background:rgba(255,255,255,0.06); border-radius:2px; overflow:hidden; }
+  .conc-bar-fill { height:100%; border-radius:2px; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+  .conc-bar-fill.blue { background: linear-gradient(90deg, var(--accent2), #7c3aed); }
+  .conc-bar-fill.gold { background: linear-gradient(90deg, var(--gold), #f97316); }
+
+  /* Activity feed */
+  .feed-list { display:flex; flex-direction:column; gap:10px; }
+  .feed-item { display:flex; gap:10px; align-items:flex-start; }
+  .feed-dot { width:6px; height:6px; border-radius:50%; margin-top:4px; flex-shrink:0; }
+  .feed-dot.green { background:var(--accent); }
+  .feed-dot.red { background:var(--danger); }
+  .feed-dot.blue { background:var(--accent2); }
+  .feed-dot.gray { background:var(--muted); }
+  .feed-text { font-size:10px; line-height:1.5; color:var(--muted); }
+  .feed-text strong { color:var(--text); }
+
+  /* Historical mini chart */
+  .chart-row {
+    display:grid; grid-template-columns:repeat(4,1fr); gap:8px;
+    margin-top:4px;
+  }
+  .hist-col { text-align:center; }
+  .hist-date { font-size:8px; color:var(--muted); margin-bottom:4px; }
+  .hist-bar-wrap { height:40px; display:flex; align-items:flex-end; justify-content:center; }
+  .hist-bar {
+    width:18px; border-radius:3px 3px 0 0;
+    background: linear-gradient(180deg, var(--accent2), rgba(61,139,255,0.3));
+    transition: height 0.5s ease;
+  }
+  .hist-val { font-size:8px; color:var(--muted); margin-top:3px; }
+
+  /* Bottom row */
+  .bottom-grid {
+    display:grid; grid-template-columns: 1fr 1fr; gap:20px;
+  }
+  .category-grid {
+    display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:4px;
+  }
+  .cat-item {
+    background:var(--surface2); border:1px solid var(--border); border-radius:10px;
+    padding:10px 12px;
+  }
+  .cat-label { font-size:9px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; }
+  .cat-val { font-family:'Syne',sans-serif; font-weight:700; font-size:16px; }
+  .cat-val.green { color:var(--accent); }
+  .cat-val.blue { color:var(--accent2); }
+  .cat-val.gold { color:var(--gold); }
+  .cat-val.red { color:var(--danger); }
+
+  /* Scrollable table */
+  .table-scroll { max-height:420px; overflow-y:auto; }
+  .table-scroll::-webkit-scrollbar { width:4px; }
+  .table-scroll::-webkit-scrollbar-track { background:transparent; }
+  .table-scroll::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+
+  /* Tag */
+  .type-tag {
+    font-size:8px; padding:2px 6px; border-radius:4px;
+    background:rgba(61,139,255,0.1); color:var(--accent2);
+    border:1px solid rgba(61,139,255,0.2);
+    letter-spacing:0.5px;
+  }
+  .type-tag.dom { background:rgba(0,229,160,0.1); color:var(--accent); border-color:rgba(0,229,160,0.2); }
+  .type-tag.fund { background:rgba(245,200,66,0.1); color:var(--gold); border-color:rgba(245,200,66,0.2); }
+
+  /* Animate in */
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(12px); }
+    to { opacity:1; transform:translateY(0); }
+  }
+  .kpi-card { animation: fadeUp 0.4s ease both; }
+  .kpi-card:nth-child(1) { animation-delay:0.05s; }
+  .kpi-card:nth-child(2) { animation-delay:0.1s; }
+  .kpi-card:nth-child(3) { animation-delay:0.15s; }
+  .kpi-card:nth-child(4) { animation-delay:0.2s; }
+  .table-card, .side-panel, .mini-card { animation: fadeUp 0.5s ease 0.2s both; }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo-block">
+      <div class="logo-badge">HYGN</div>
+      <div class="logo-text">
+        <h1>HYGN IJ &mdash; Investor Relations</h1>
+        <span>Shareholding Monitor · IDX Listed</span>
+      </div>
+    </div>
+    <div class="header-meta">
+      <div class="last-update">Last updated: <strong>05 Jun 2025</strong></div>
+      <div class="date-badge">📅 Data Range: 13 Feb – 5 Jun 2025</div>
+    </div>
+  </header>
+
+  <!-- KPI ROW -->
+  <div class="kpi-row">
+    <div class="kpi-card">
+      <div class="kpi-label">Top Holder Shares</div>
+      <div class="kpi-value green">1.2B</div>
+      <div class="kpi-sub">Hendrik Yong · HD PT. K HD001</div>
+      <div class="kpi-change up">▲ Stable, no change today</div>
+    </div>
+    <div class="kpi-card blue">
+      <div class="kpi-label">Total Tracked Investors</div>
+      <div class="kpi-value blue">30</div>
+      <div class="kpi-sub">Active shareholders on register</div>
+      <div class="kpi-change up">▲ 4 foreign, 26 domestic</div>
+    </div>
+    <div class="kpi-card gold">
+      <div class="kpi-label">Notable Movement (1D)</div>
+      <div class="kpi-value gold">−316.3K</div>
+      <div class="kpi-sub">Investor #23 (ANI PT W AN001)</div>
+      <div class="kpi-change down">▼ Largest single-day outflow</div>
+    </div>
+    <div class="kpi-card red">
+      <div class="kpi-label">Net D-1 Position Change</div>
+      <div class="kpi-value red">+622K</div>
+      <div class="kpi-sub">Net across all tracked holders</div>
+      <div class="kpi-change up">▲ Accumulators outpacing sellers</div>
+    </div>
+  </div>
+
+  <!-- MAIN GRID -->
+  <div class="main-grid">
+
+    <!-- TABLE -->
+    <div class="table-card">
+      <div class="card-header">
+        <span class="card-title">Shareholder Register</span>
+        <span class="card-badge">Top 30 Holders</span>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Investor Name</th>
+              <th>Type</th>
+              <th>Latest</th>
+              <th>D−1</th>
+              <th>+/−</th>
+              <th>5-Jun</th>
+              <th>26-May</th>
+              <th>22-May</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="row-gold">
+              <td class="rank-top">1</td>
+              <td>Hendrik Yong</td>
+              <td><span class="type-tag dom">DOM</span></td>
+              <td>1,200,000,000</td>
+              <td>1,200,000,000</td>
+              <td class="change-zero">0</td>
+              <td>1,200,000,000</td>
+              <td>1,200,000,000</td>
+              <td>1,200,000,000</td>
+            </tr>
+            <tr>
+              <td class="rank-top">2</td>
+              <td>Hermes Thamrin</td>
+              <td><span class="type-tag dom">DOM</span></td>
+              <td>500,000,000</td>
+              <td>500,000,000</td>
+              <td class="change-zero">0</td>
+              <td>500,000,000</td>
+              <td>500,000,000</td>
+              <td>500,000,000</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>Rondy Yunanda</td>
+              <td><span class="type-tag dom">DOM</span></td>
+              <td>200,000,000</td>
+              <td>200,000,000</td>
+              <td class="change-zero">0</td>
+              <td>200,000,000</td>
+              <td>200,000,000</td>
+              <td>200,000,000</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td>Wincent Yunanda</td>
+              <td><span class="type-tag dom">DOM</span></td>
+              <td>100,000,000</td>
+              <td>100,000,000</td>
+              <td class="change-zero">0</td>
+              <td>100,000,000</td>
+              <td>100,000,000</td>
+              <td>100,000,000</td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td>Nini</td>
+              <td><span class="type-tag dom">DOM</span></td>
+              <td>49,530,000</td>
+              <td>49,530,000</td>
+              <td class="change-zero">0</td>
+              <td>49,530,000</td>
+              <td>49,530,000</td>
+              <td>49,530,000</td>
+            </tr>
+            <tr>
+              <td>6</td>
+              <td>Bank of Singapore Ltd</td>
+              <td><span class="type-tag">FOR</span></td>
+              <td>47,500,000</td>
+              <td>47,500,000</td>
+              <td class="change-zero">0</td>
+              <td>47,500,000</td>
+              <td>47,500,000</td>
+              <td>47,500,000</td>
+            </tr>
+            <tr>
+              <td>7</td>
+              <td>Citibank SG A/C CIMB-KAF Jade</td>
+              <td><span class="type-tag">FOR</span></td>
+              <td>42,000,000</td>
+              <td>42,000,000</td>
+              <td class="change-zero">0</td>
+              <td>42,000,000</td>
+              <td>42,000,000</td>
+              <td>42,000,000</td>
+            </tr>
+            <tr>
+              <td>8</td>
+              <td>Reksa Dana Sucor Premium Fund</td>
+              <td><span class="type-tag fund">FUND</span></td>
+              <td>32,696,600</td>
+              <td>32,696,600</td>
+              <td class="change-zero">0</td>
+              <td>32,696,600</td>
+              <td>32,696,600</td>
+              <td>32,696,600</td>
+            </tr>
+            <tr class="row-cyan">
+              <td>9</td>
+              <td>(Unnamed HD001)</td>
+              <td><span class="type-tag dom">DOM</span></td>
+              <td>32,333,700</td>
+              <td>32,333,700</td>
+              <td class="change-zero">0</td>
+              <td>32,333,700</td>
+              <td>32,333,700</td>
+              <td>32,333,700</td>
+            </tr>
+            <tr>
+              <td>10</td>
+              <td>Malayan Banking – Ethereal Cap</td>
+              <td><span class="type-tag fund">FUND</span></td>
+              <td>26,950,000</td>
+              <td>26,950,000</td>
+              <td class="change-zero">0</td>
+              <td>26,950,000</td>
+              <td>26,950,000</td>
+              <td>26,950,000</td>
+            </tr>
+            <tr class="row-cyan">
+              <td>11</td>
+              <td>(Unnamed HD001)</td>
+              <td><span class="type-tag dom">DOM</span></td>
+              <td>26,500,000</td>
+              <td>26,500,000</td>
+              <td class="change-zero">0</td>
+              <td>26,500,000</td>
+              <td>26,500,000</td>
+              <td>26,500,000</td>
+            </tr>
+            <tr>
+              <td>12</td>
+              <td>(Unnamed CC001)</td>
+              <td><span class="type-tag dom">DOM</span></td>
+              <td>20,583,500</td>
+              <td>21,209,900</td>
+              <td class="change-neg">−626,400</td>
+              <td>20,583,500</td>
+              <td>21,209,900</td>
+              <td>21,209,900</td>
+            </tr>
+            <tr class="row-green">
+              <td>13</td>
+              <td>Reksa Dana Sucor Equity Prima</td>
+              <td><span class="type-tag fund">FUND</span></td>
+              <td>19,651,100</td>
+              <td>19,651,100</td>
+              <td class="change-zero">0</td>
+              <td>19,651,100</td>
+              <td>19,651,100</td>
+              <td>19,651,100</td>
+            </tr>
+            <tr class="row-cyan">
+              <td>14</td>
+              <td>(Unnamed HD001)</td>
+              <td><span class="type-tag dom">DOM</span></td>
+              <td>14,350,000</td>
+              <td>14,350,000</td>
+              <td class="change-zero">0</td>
+              <td>14,350,000</td>
+              <td>14,350,000</td>
+              <td>14,350,000</td>
+            </tr>
+            <tr class="row-green">
+              <td>15</td>
+              <td>CGS Intl Securities Singapore</td>
+              <td><span class="type-tag">FOR</span></td>
+              <td>14,285,800</td>
+              <td>14,311,800</td>
+              <td class="change-neg">−26,000</td>
+              <td>14,285,800</td>
+              <td>14,311,800</td>
+              <td>14,039,800</td>
+            </tr>
+            <tr>
+              <td>16</td>
+              <td>Reksa Dana Sucor Equity Fund</td>
+              <td><span class="type-tag fund">FUND</span></td>
+              <td>14,137,100</td>
+              <td>14,137,100</td>
+              <td class="change-zero">0</td>
+              <td>14,137,100</td>
+              <td>14,137,100</td>
+              <td>14,137,100</td>
+            </tr>
+            <tr>
+              <td>17</td>
+              <td>Su-Hui Tsai</td>
+              <td><span class="type-tag">FOR</span></td>
+              <td>14,000,000</td>
+              <td>14,000,000</td>
+              <td class="change-zero">0</td>
+              <td>14,000,000</td>
+              <td>14,000,000</td>
+              <td>14,000,000</td>
+            </tr>
+            <tr>
+              <td>18</td>
+              <td>Doh Jee Ming</td>
+              <td><span class="type-tag">FOR</span></td>
+              <td>13,500,000</td>
+              <td>13,500,000</td>
+              <td class="change-zero">0</td>
+              <td>13,500,000</td>
+              <td>13,500,000</td>
+              <td>13,500,000</td>
+            </tr>
+            <tr>
+              <td>19</td>
+              <td>Lifia</td>
+              <td><span class="type-tag dom">DOM</span></td>
+              <td>12,000,000</td>
+              <td>12,000,000</td>
+              <td class="change-zero">0</td>
+              <td>12,000,000</td>
+              <td>12,000,000</td>
+              <td>12,000,000</td>
+            </tr>
+            <tr>
+              <td>20</td>
+              <td>(Unnamed BR001)</td>
+              <td><span class="type-tag dom">DOM</span></td>
+              <td>9,116,600</td>
+              <td>8,633,100</td>
+              <td class="change-pos">+483,500</td>
+              <td>9,116,600</td>
+              <td>8,633,100</td>
+              <td>9,123,100</td>
+            </tr>
+            <tr>
+              <td>21</td>
+              <td>(Unnamed BQ001)</td>
+              <td><span class="type-tag dom">DOM</span></td>
+              <td>8,335,000</td>
+              <td>7,870,100</td>
+              <td class="change-pos">+464,900</td>
+              <td>8,335,000</td>
+              <td>7,870,100</td>
+              <td>8,279,200</td>
+            </tr>
+            <tr>
+              <td>22</td>
+              <td>(Unnamed HD001)</td>
+              <td><span class="type-tag dom">DOM</span></td>
+              <td>7,900,000</td>
+              <td>7,900,000</td>
+              <td class="change-zero">0</td>
+              <td>7,900,000</td>
+              <td>7,900,000</td>
+              <td>7,900,000</td>
+            </tr>
+            <tr>
+              <td>23</td>
+              <td>(Unnamed AN001)</td>
+              <td><span class="type-tag dom">DOM</span></td>
+              <td>7,838,600</td>
+              <td>8,154,900</td>
+              <td class="change-neg">−316,300</td>
+              <td>7,838,600</td>
+              <td>8,154,900</td>
+              <td>7,522,200</td>
+            </tr>
+            <tr>
+              <td>24</td>
+              <td>(Unnamed HD001)</td>
+              <td><span class="type-tag dom">DOM</span></td>
+              <td>7,200,000</td>
+              <td>7,200,000</td>
+              <td class="change-zero">0</td>
+              <td>7,200,000</td>
+              <td>7,200,000</td>
+              <td>7,200,000</td>
+            </tr>
+            <tr class="row-cyan">
+              <td>25</td>
+              <td>(Unnamed HD001)</td>
+              <td><span class="type-tag dom">DOM</span></td>
+              <td>7,150,000</td>
+              <td>7,150,000</td>
+              <td class="change-zero">0</td>
+              <td>7,150,000</td>
+              <td>7,150,000</td>
+              <td>7,150,000</td>
+            </tr>
+            <tr>
+              <td>26</td>
+              <td>(Unnamed HD001)</td>
+              <td><span class="type-tag dom">DOM</span></td>
+              <td>6,900,000</td>
+              <td>6,900,000</td>
+              <td class="change-zero">0</td>
+              <td>6,900,000</td>
+              <td>6,900,000</td>
+              <td>6,900,000</td>
+            </tr>
+            <tr>
+              <td>27</td>
+              <td>Ong Wee Khiang</td>
+              <td><span class="type-tag">FOR</span></td>
+              <td>6,900,000</td>
+              <td>6,900,000</td>
+              <td class="change-zero">0</td>
+              <td>6,900,000</td>
+              <td>6,900,000</td>
+              <td>6,900,000</td>
+            </tr>
+            <tr>
+              <td>28</td>
+              <td>(Unnamed HD001)</td>
+              <td><span class="type-tag dom">DOM</span></td>
+              <td>6,900,000</td>
+              <td>6,900,000</td>
+              <td class="change-zero">0</td>
+              <td>6,900,000</td>
+              <td>6,900,000</td>
+              <td>6,900,000</td>
+            </tr>
+            <tr>
+              <td>29</td>
+              <td>PT Sehat Bertumbuh Bersama</td>
+              <td><span class="type-tag dom">DOM</span></td>
+              <td>6,900,000</td>
+              <td>6,900,000</td>
+              <td class="change-zero">0</td>
+              <td>6,900,000</td>
+              <td>6,900,000</td>
+              <td>6,900,000</td>
+            </tr>
+            <tr class="row-cyan">
+              <td>30</td>
+              <td>(Unnamed HD001)</td>
+              <td><span class="type-tag dom">DOM</span></td>
+              <td>4,745,400</td>
+              <td>4,745,400</td>
+              <td class="change-zero">0</td>
+              <td>4,745,400</td>
+              <td>4,745,400</td>
+              <td>5,007,700</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SIDE PANEL -->
+    <div class="side-panel">
+
+      <!-- Concentration -->
+      <div class="mini-card">
+        <div class="mini-title">Top Holder Concentration</div>
+        <div class="conc-list">
+          <div class="conc-item">
+            <div class="conc-header">
+              <span class="conc-name">Hendrik Yong (#1)</span>
+              <span class="conc-pct">~54.5%</span>
+            </div>
+            <div class="conc-bar-bg"><div class="conc-bar-fill" style="width:54.5%"></div></div>
+          </div>
+          <div class="conc-item">
+            <div class="conc-header">
+              <span class="conc-name">Hermes Thamrin (#2)</span>
+              <span class="conc-pct">~22.7%</span>
+            </div>
+            <div class="conc-bar-bg"><div class="conc-bar-fill blue" style="width:22.7%"></div></div>
+          </div>
+          <div class="conc-item">
+            <div class="conc-header">
+              <span class="conc-name">Rondy Yunanda (#3)</span>
+              <span class="conc-pct">~9.1%</span>
+            </div>
+            <div class="conc-bar-bg"><div class="conc-bar-fill gold" style="width:9.1%"></div></div>
+          </div>
+          <div class="conc-item">
+            <div class="conc-header">
+              <span class="conc-name">Others (Top 30)</span>
+              <span class="conc-pct">~13.7%</span>
+            </div>
+            <div class="conc-bar-bg"><div class="conc-bar-fill" style="width:13.7%; background: linear-gradient(90deg, var(--muted), var(--surface2));"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Historical snapshot -->
+      <div class="mini-card">
+        <div class="mini-title">Historical Snapshot · Holder #20</div>
+        <div class="chart-row">
+          <div class="hist-col">
+            <div class="hist-date">13-Feb</div>
+            <div class="hist-bar-wrap"><div class="hist-bar" style="height:26px"></div></div>
+            <div class="hist-val">7.5M</div>
+          </div>
+          <div class="hist-col">
+            <div class="hist-date">22-Apr</div>
+            <div class="hist-bar-wrap"><div class="hist-bar" style="height:30px"></div></div>
+            <div class="hist-val">8.0M</div>
+          </div>
+          <div class="hist-col">
+            <div class="hist-date">26-May</div>
+            <div class="hist-bar-wrap"><div class="hist-bar" style="height:33px"></div></div>
+            <div class="hist-val">8.6M</div>
+          </div>
+          <div class="hist-col">
+            <div class="hist-date">5-Jun</div>
+            <div class="hist-bar-wrap"><div class="hist-bar" style="height:40px"></div></div>
+            <div class="hist-val">9.1M</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Activity Feed -->
+      <div class="mini-card">
+        <div class="mini-title">Today's Activity Feed</div>
+        <div class="feed-list">
+          <div class="feed-item">
+            <div class="feed-dot green"></div>
+            <div class="feed-text"><strong>+483,500</strong> — Holder #20 accumulated via BR001</div>
+          </div>
+          <div class="feed-item">
+            <div class="feed-dot green"></div>
+            <div class="feed-text"><strong>+464,900</strong> — Holder #21 accumulated via BQ001</div>
+          </div>
+          <div class="feed-item">
+            <div class="feed-dot red"></div>
+            <div class="feed-text"><strong>−626,400</strong> — Holder #12 reduced position (CC001)</div>
+          </div>
+          <div class="feed-item">
+            <div class="feed-dot red"></div>
+            <div class="feed-text"><strong>−316,300</strong> — Holder #23 reduced position (AN001)</div>
+          </div>
+          <div class="feed-item">
+            <div class="feed-dot red"></div>
+            <div class="feed-text"><strong>−26,000</strong> — CGS Intl Securities trimmed position</div>
+          </div>
+          <div class="feed-item">
+            <div class="feed-dot gray"></div>
+            <div class="feed-text"><strong>25 holders</strong> — no change recorded today</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- BOTTOM ROW -->
+  <div class="bottom-grid">
+    <div class="table-card">
+      <div class="card-header">
+        <span class="card-title">Investor Composition</span>
+        <span class="card-badge blue">Breakdown</span>
+      </div>
+      <div style="padding:16px 20px;">
+        <div class="category-grid">
+          <div class="cat-item">
+            <div class="cat-label">Domestic Retail</div>
+            <div class="cat-val green">22</div>
+          </div>
+          <div class="cat-item">
+            <div class="cat-label">Foreign Investors</div>
+            <div class="cat-val blue">5</div>
+          </div>
+          <div class="cat-item">
+            <div class="cat-label">Mutual Funds</div>
+            <div class="cat-val gold">3</div>
+          </div>
+          <div class="cat-item">
+            <div class="cat-label">Movers Today</div>
+            <div class="cat-val red">5</div>
+          </div>
+        </div>
+        <div style="margin-top:16px; font-size:10px; color:var(--muted); line-height:1.8;">
+          <div>🏆 Largest holder: <span style="color:var(--gold)">Hendrik Yong</span> — 1,200,000,000 shares</div>
+          <div>📈 Largest accumulator (1D): <span style="color:var(--accent)">Holder #20 +483,500</span></div>
+          <div>📉 Largest reducer (1D): <span style="color:var(--danger)">Holder #12 −626,400</span></div>
+          <div>🔒 Stable holders (0 change): <span style="color:var(--text)">25 of 30</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="card-header">
+        <span class="card-title">Custodian Breakdown</span>
+        <span class="card-badge">By Sub-Registry</span>
+      </div>
+      <div style="padding:16px 20px;">
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+              <span style="font-size:10px; color:var(--text)">HD PT. K HD001 (Henan Putihrai)</span>
+              <span style="font-size:10px; color:var(--accent)">~76%</span>
+            </div>
+            <div class="conc-bar-bg"><div class="conc-bar-fill" style="width:76%"></div></div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+              <span style="font-size:10px; color:var(--text)">CITI / BNI / HSBC / Other</span>
+              <span style="font-size:10px; color:var(--accent2)">~14%</span>
+            </div>
+            <div class="conc-bar-bg"><div class="conc-bar-fill blue" style="width:14%"></div></div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+              <span style="font-size:10px; color:var(--text)">SCE / YUP / XL0 / ANI</span>
+              <span style="font-size:10px; color:var(--gold)">~10%</span>
+            </div>
+            <div class="conc-bar-bg"><div class="conc-bar-fill gold" style="width:10%"></div></div>
+          </div>
+        </div>
+        <div style="margin-top:16px; font-size:10px; color:var(--muted); line-height:1.8;">
+          <div>📋 Data sourced from KSEI sub-account registry</div>
+          <div>🔄 Dashboard updates daily upon file upload</div>
+          <div>⚠️ Yellow rows = positions monitored closely</div>
+          <div>🟢 Green rows = flagged institutional funds</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center; margin-top:24px; font-size:9px; color:var(--muted); letter-spacing:1.5px; text-transform:uppercase; padding-bottom:24px;">
+    HYGN IJ · Investor Relations Management · Confidential · For Internal Use Only
+  </div>
+
+</div>
+</body>
+</html>
