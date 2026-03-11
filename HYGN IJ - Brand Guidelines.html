@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HYGN IJ – Brand Guidelines</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #F4F6F4;
+      color: #374151;
+      font-size: 13px;
+    }
+
+    /* HEADER */
+    header {
+      background: #414141;
+      color: #fff;
+      padding: 20px 36px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header-left { display: flex; align-items: center; gap: 20px; }
+
+    /* ecoCare logo rendered in HTML */
+    .logo-wrap { display: flex; flex-direction: column; align-items: flex-start; }
+    .logo-eco {
+      font-size: 26px; font-weight: 900;
+      display: flex; align-items: center; line-height: 1;
+      letter-spacing: -0.5px;
+    }
+    .logo-eco-text { color: #439b4b; font-style: italic; }
+    .logo-care-text { color: #fff; font-style: italic; }
+    .logo-leaf {
+      display: inline-block; width: 10px; height: 10px;
+      background: #439b4b; border-radius: 50% 0 50% 0;
+      margin: 0 2px 8px 2px; transform: rotate(-45deg);
+    }
+    .logo-sub {
+      font-size: 7px; letter-spacing: 2px; color: rgba(255,255,255,0.6);
+      font-weight: 700; margin-top: 3px; text-transform: uppercase;
+    }
+
+    .header-divider { width: 1px; height: 44px; background: rgba(255,255,255,0.2); }
+    .header-text h1 { font-size: 16px; font-weight: 700; color: #fff; }
+    .header-text h2 { font-size: 11.5px; font-weight: 400; color: rgba(255,255,255,0.55); margin-top: 3px; }
+    .header-meta { text-align: right; font-size: 11px; color: rgba(255,255,255,0.55); line-height: 1.8; }
+    .header-meta span { display: block; }
+    .date-badge {
+      background: #439b4b; color: #fff;
+      padding: 3px 10px; border-radius: 4px;
+      font-weight: 700; font-size: 11px;
+      display: inline-block; margin-bottom: 4px;
+    }
+
+    /* PAGE */
+    .page { padding: 26px 36px; display: flex; flex-direction: column; gap: 26px; }
+
+    .section-title {
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.9px;
+      color: #439b4b; margin-bottom: 14px;
+      padding-bottom: 6px; border-bottom: 2px solid #439b4b;
+    }
+
+    /* LOGO CARDS */
+    .logo-grid { display: flex; gap: 18px; flex-wrap: wrap; }
+    .logo-card {
+      background: #fff; border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      padding: 22px 26px; flex: 1; min-width: 240px;
+    }
+    .logo-display {
+      display: flex; align-items: center; justify-content: center;
+      height: 100px; border-radius: 6px;
+      margin-bottom: 16px; border: 1px solid #e5e7eb;
+      background: #f9fafb;
+    }
+    .logo-display.dark { background: #414141; border-color: #414141; }
+    .logo-display.green-bg { background: #439b4b; border-color: #439b4b; }
+
+    /* Large logo render */
+    .lg-logo { font-size: 32px; font-weight: 900; font-style: italic; letter-spacing: -0.5px; }
+    .lg-eco { color: #439b4b; }
+    .lg-care { color: #414141; }
+    .lg-care-white { color: #fff; }
+    .lg-eco-white { color: #87c9fe; }
+
+    .logo-card h4 { font-size: 12px; font-weight: 700; margin-bottom: 6px; color: #374151; }
+    .logo-card p  { font-size: 11.5px; color: #6b7280; line-height: 1.6; }
+
+    /* COLOR PALETTE */
+    .color-grid { display: flex; gap: 14px; flex-wrap: wrap; }
+    .color-swatch {
+      background: #fff; border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      overflow: hidden; flex: 1; min-width: 140px;
+    }
+    .swatch-block { height: 80px; }
+    .swatch-info { padding: 12px 14px; }
+    .swatch-name { font-weight: 700; font-size: 12px; color: #111827; margin-bottom: 4px; }
+    .swatch-hex  { font-size: 12px; font-family: monospace; color: #6b7280; }
+    .swatch-use  { font-size: 11px; color: #9ca3af; margin-top: 4px; line-height: 1.5; }
+
+    /* TYPOGRAPHY */
+    .typo-grid { display: flex; gap: 16px; flex-wrap: wrap; }
+    .typo-card {
+      background: #fff; border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      padding: 20px 22px; flex: 1; min-width: 200px;
+    }
+    .typo-label { font-size: 10px; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+    .typo-sample { color: #111827; margin-bottom: 10px; }
+    .typo-spec   { font-size: 11px; color: #6b7280; font-family: monospace; line-height: 1.8; }
+
+    /* SERVICES */
+    .services-grid { display: flex; gap: 14px; flex-wrap: wrap; }
+    .service-card {
+      background: #fff; border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      padding: 16px 18px; flex: 1; min-width: 170px;
+      border-top: 3px solid #439b4b;
+    }
+    .service-card.blue  { border-top-color: #87c9fe; }
+    .service-card.gray  { border-top-color: #414141; }
+    .service-card.light { border-top-color: #a5d6a7; }
+    .service-card h4 { font-size: 12px; font-weight: 700; color: #414141; margin-bottom: 5px; }
+    .service-card p  { font-size: 11.5px; color: #6b7280; line-height: 1.5; }
+
+    /* NAV */
+    .nav-tree {
+      background: #fff; border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      padding: 18px 22px;
+    }
+    .nav-item {
+      padding: 7px 0; border-bottom: 1px solid #f3f4f6;
+      display: flex; align-items: center; gap: 10px; font-size: 12.5px;
+    }
+    .nav-item:last-child { border-bottom: none; }
+    .nav-dot { width: 8px; height: 8px; border-radius: 50%; background: #439b4b; flex-shrink: 0; }
+    .nav-name { font-weight: 600; color: #414141; min-width: 160px; }
+    .nav-sub  { color: #6b7280; font-size: 11.5px; }
+
+    /* PRINCIPLES */
+    .principles-grid { display: flex; gap: 16px; flex-wrap: wrap; }
+    .principle-card {
+      background: #fff; border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      padding: 16px 20px; flex: 1; min-width: 180px;
+      border-top: 3px solid #439b4b;
+    }
+    .principle-card.blue { border-top-color: #87c9fe; }
+    .principle-card.gray { border-top-color: #414141; }
+    .principle-card h4 { font-size: 12px; font-weight: 700; margin-bottom: 5px; color: #414141; }
+    .principle-card p  { font-size: 11.5px; color: #6b7280; line-height: 1.6; }
+
+    /* FOOTER */
+    footer {
+      background: #414141; color: rgba(255,255,255,0.5);
+      text-align: center; font-size: 11px;
+      padding: 13px 36px; margin-top: 8px;
+    }
+    footer span { color: #fff; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <div class="logo-wrap">
+      <div class="logo-eco">
+        <span class="logo-eco-text">eco</span><span class="logo-care-text">Care</span>
+      </div>
+      <div class="logo-sub">Hygiene Service</div>
+    </div>
+    <div class="header-divider"></div>
+    <div class="header-text">
+      <h1>HYGN IJ &nbsp;·&nbsp; PT Ecocare Indo Pasifik Tbk</h1>
+      <h2>Brand Guidelines &amp; Visual Identity Reference</h2>
+    </div>
+  </div>
+  <div class="header-meta">
+    <span class="date-badge">March 2026</span>
+    <span>Source: ecocare.id &amp; Brandfetch</span>
+    <span>Prepared by Esente Indonesia</span>
+  </div>
+</header>
+
+<div class="page">
+
+  <!-- LOGOS -->
+  <div>
+    <div class="section-title">Logo System</div>
+    <div class="logo-grid">
+
+      <div class="logo-card">
+        <div class="logo-display">
+          <div style="text-align:center;">
+            <div><span class="lg-logo lg-eco">eco</span><span class="lg-logo lg-care">Care</span></div>
+            <div style="font-size:8px; letter-spacing:2px; color:#6b7280; margin-top:4px; text-transform:uppercase; font-weight:700;">Hygiene Service</div>
+          </div>
+        </div>
+        <h4>Primary Logo — Light Background</h4>
+        <p>Green "eco" + dark gray "Care" in bold italic. The word "eco" signals environmental commitment; "Care" conveys service and responsibility. Subtitle "Hygiene Service" in spaced caps below.</p>
+      </div>
+
+      <div class="logo-card">
+        <div class="logo-display dark">
+          <div style="text-align:center;">
+            <div><span class="lg-logo" style="color:#439b4b; font-style:italic;">eco</span><span class="lg-logo lg-care-white" style="font-style:italic;">Care</span></div>
+            <div style="font-size:8px; letter-spacing:2px; color:rgba(255,255,255,0.5); margin-top:4px; text-transform:uppercase; font-weight:700;">Hygiene Service</div>
+          </div>
+        </div>
+        <h4>Primary Logo — Dark Background</h4>
+        <p>Green "eco" retained; "Care" switches to white on dark/charcoal backgrounds. Used in headers, dark-mode materials, and over dark photography.</p>
+      </div>
+
+      <div class="logo-card">
+        <div class="logo-display green-bg">
+          <div style="text-align:center;">
+            <div><span class="lg-logo" style="color:#fff; font-style:italic;">eco</span><span class="lg-logo" style="color:#fff; font-style:italic; opacity:0.85;">Care</span></div>
+            <div style="font-size:8px; letter-spacing:2px; color:rgba(255,255,255,0.7); margin-top:4px; text-transform:uppercase; font-weight:700;">Hygiene Service</div>
+          </div>
+        </div>
+        <h4>Reversed Logo — Green Background</h4>
+        <p>Full white version used over brand green backgrounds. Maintains legibility while integrating with the primary brand color field.</p>
+      </div>
+
+    </div>
+
+    <div style="background:#fff; border-radius:8px; padding:14px 20px; margin-top:14px; box-shadow:0 1px 4px rgba(0,0,0,0.07); font-size:12px; color:#6b7280; line-height:1.7;">
+      <strong style="color:#414141;">Logo Symbolism:</strong> &nbsp;
+      Green signifies a <em>fresh environment</em> and the vitality of human life (green leaves). Blue represents <em>sanitation attributes</em> that preserve the environment. The italic style conveys dynamism and forward momentum — rebranded in 2023 to unify ecoCare Group under one identity.
+    </div>
+  </div>
+
+  <!-- COLOR PALETTE -->
+  <div>
+    <div class="section-title">Color Palette</div>
+    <div class="color-grid">
+
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#439b4b;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">ecoCare Green</div>
+          <div class="swatch-hex">#439b4b &nbsp;·&nbsp; Fruit Salad</div>
+          <div class="swatch-use">Primary brand color. "eco" wordmark, section accents, CTAs, icons. Represents fresh environment & vitality.</div>
+        </div>
+      </div>
+
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#414141;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Charcoal Dark</div>
+          <div class="swatch-hex">#414141 &nbsp;·&nbsp; Tundora</div>
+          <div class="swatch-use">"Care" wordmark, body text, headers, footers, dark backgrounds. Professional, neutral anchor.</div>
+        </div>
+      </div>
+
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#87c9fe;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Sanitation Blue</div>
+          <div class="swatch-hex">#87c9fe &nbsp;·&nbsp; Malibu</div>
+          <div class="swatch-use">Supporting accent. Represents sanitation, cleanliness, water. Used in highlights, tags, data visuals.</div>
+        </div>
+      </div>
+
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#a5d6a7;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Light Green</div>
+          <div class="swatch-hex">#a5d6a7</div>
+          <div class="swatch-use">Secondary tint of ecoCare Green. Backgrounds, card borders, subtle accents.</div>
+        </div>
+      </div>
+
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#FFFFFF; border-bottom:1px solid #e5e7eb;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">White</div>
+          <div class="swatch-hex">#FFFFFF</div>
+          <div class="swatch-use">Page backgrounds, reversed logo, text on green/dark backgrounds.</div>
+        </div>
+      </div>
+
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#F4F6F4;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Light Background</div>
+          <div class="swatch-hex">#F4F6F4</div>
+          <div class="swatch-use">Page background. Subtle green tint reinforces eco/natural identity.</div>
+        </div>
+      </div>
+
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#374151;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Body Text</div>
+          <div class="swatch-hex">#374151</div>
+          <div class="swatch-use">Body copy, descriptions, secondary text on light backgrounds.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TYPOGRAPHY -->
+  <div>
+    <div class="section-title">Typography</div>
+    <div class="typo-grid">
+
+      <div class="typo-card">
+        <div class="typo-label">Display / Hero</div>
+        <div class="typo-sample" style="font-size:30px; font-weight:900; font-style:italic; color:#439b4b;">ecoCare</div>
+        <div class="typo-spec">
+          font: Avenir LT W01 85 Heavy<br>
+          style: italic / bold<br>
+          color: #439b4b + #414141<br>
+          use: logo, hero headlines
+        </div>
+      </div>
+
+      <div class="typo-card">
+        <div class="typo-label">Section Title</div>
+        <div class="typo-sample" style="font-size:20px; font-weight:800; color:#414141;">Hygiene Solutions</div>
+        <div class="typo-spec">
+          font: Avenir / Arial fallback<br>
+          font-weight: 800<br>
+          font-size: 20px<br>
+          use: section headings
+        </div>
+      </div>
+
+      <div class="typo-card">
+        <div class="typo-label">Navigation / Menu</div>
+        <div class="typo-sample" style="font-size:14px; font-weight:600; color:#414141;">Services &nbsp;|&nbsp; About &nbsp;|&nbsp; IR</div>
+        <div class="typo-spec">
+          font: Arial<br>
+          font-weight: 600<br>
+          font-size: 14–15px<br>
+          use: navigation, labels
+        </div>
+      </div>
+
+      <div class="typo-card">
+        <div class="typo-label">Body Text</div>
+        <div class="typo-sample" style="font-size:13px; color:#374151; line-height:1.6;">Pioneer in hygiene &amp; sanitation in Indonesia — providing eco-friendly solutions since 2006.</div>
+        <div class="typo-spec">
+          font: Arial<br>
+          font-weight: 400<br>
+          font-size: 13–14px<br>
+          use: descriptions, paragraphs
+        </div>
+      </div>
+
+    </div>
+    <div style="background:#fff; border-radius:8px; padding:14px 20px; margin-top:12px; box-shadow:0 1px 4px rgba(0,0,0,0.07); font-size:12px; color:#6b7280; line-height:1.7;">
+      <strong style="color:#414141;">Primary Font:</strong> &nbsp;<strong>Avenir LT W01 85 Heavy</strong> (logo & display) &nbsp;·&nbsp;
+      <strong>Fallback:</strong> Arial, Helvetica, sans-serif &nbsp;·&nbsp;
+      Avenir is a humanist geometric sans-serif — clean, modern, and legible. Reflects the brand's professional yet approachable character.
+    </div>
+  </div>
+
+  <!-- BUSINESS UNITS -->
+  <div>
+    <div class="section-title">Business Units (ecoCare Group)</div>
+    <div class="services-grid">
+      <div class="service-card">
+        <h4>ecoCare Hygiene</h4>
+        <p>Room hygiene equipment rental &amp; management. Digital sanitizers, soap dispensers, air fresheners, foam soap systems.</p>
+      </div>
+      <div class="service-card blue">
+        <h4>ecoCare Cleaning</h4>
+        <p>Professional cleaning &amp; housekeeping services for residences, offices, and commercial zones.</p>
+      </div>
+      <div class="service-card gray">
+        <h4>TukangBersih</h4>
+        <p>Consumer-facing cleaning platform. On-demand cleaning services for residential &amp; light commercial.</p>
+      </div>
+      <div class="service-card light">
+        <h4>ecoCare Pest Control</h4>
+        <p>Pest control and disinfectant services for homes, offices, and commercial properties.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAVIGATION STRUCTURE -->
+  <div>
+    <div class="section-title">Website Navigation (en.ecocare.id)</div>
+    <div class="nav-tree">
+      <div class="nav-item"><div class="nav-dot"></div><div class="nav-name">Home</div><div class="nav-sub">Hero, services overview, client logos, contact CTA</div></div>
+      <div class="nav-item"><div class="nav-dot" style="background:#87c9fe;"></div><div class="nav-name">Services</div><div class="nav-sub">Hygiene, Cleaning, Pest Control, Disinfectant</div></div>
+      <div class="nav-item"><div class="nav-dot"></div><div class="nav-name">Vision &amp; Mission (Visi-Misi)</div><div class="nav-sub">Company purpose and strategic direction</div></div>
+      <div class="nav-item"><div class="nav-dot"></div><div class="nav-name">History (Riwayat)</div><div class="nav-sub">Founded 2006 as PT Indocare Pacific, rebranded 2023 as PT Ecocare Indo Pasifik Tbk</div></div>
+      <div class="nav-item"><div class="nav-dot" style="background:#414141;"></div><div class="nav-name">Our Clients</div><div class="nav-sub">Client portfolio across sectors</div></div>
+      <div class="nav-item"><div class="nav-dot" style="background:#E63B2D;"></div><div class="nav-name">Investor Relations</div><div class="nav-sub">Financials, disclosures, shareholding data — key for HYGN IJ coverage</div></div>
+    </div>
+  </div>
+
+  <!-- BRAND PRINCIPLES -->
+  <div>
+    <div class="section-title">Brand Tone &amp; Design Principles</div>
+    <div class="principles-grid">
+      <div class="principle-card">
+        <h4>Eco-Conscious</h4>
+        <p>Green identity signals environmental responsibility. Messaging should reinforce sustainability, eco-friendly products, and clean living. Avoid industrial/harsh tones.</p>
+      </div>
+      <div class="principle-card blue">
+        <h4>Clean &amp; Sanitary</h4>
+        <p>Blue accent represents sanitation and purity. Layouts should feel uncluttered, hygienic, and professional — reflecting the core service promise.</p>
+      </div>
+      <div class="principle-card gray">
+        <h4>Pioneer &amp; Trusted</h4>
+        <p>First hygiene system company in Indonesia (2006). 15+ years of track record. Tone should project expertise, credibility, and market leadership.</p>
+      </div>
+      <div class="principle-card" style="border-top-color:#a5d6a7;">
+        <h4>Modern &amp; Accessible</h4>
+        <p>2023 rebranding unified ecoCare Group with a fresh, modern identity. Communication should be approachable, clear, and accessible to B2B and B2C audiences.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPANY FACTS -->
+  <div>
+    <div class="section-title">Key Company Facts</div>
+    <div style="background:#fff; border-radius:8px; padding:16px 22px; box-shadow:0 1px 4px rgba(0,0,0,0.07); font-size:12.5px; line-height:2; color:#374151;">
+      <table style="width:100%; border-collapse:collapse;">
+        <tr><td style="width:220px; color:#6b7280; font-size:11px; text-transform:uppercase; letter-spacing:0.5px;">Full Company Name</td><td><strong>PT Ecocare Indo Pasifik Tbk</strong></td></tr>
+        <tr><td style="color:#6b7280; font-size:11px; text-transform:uppercase; letter-spacing:0.5px;">Ticker</td><td><strong style="color:#439b4b;">HYGN IJ</strong> &nbsp;(IDX)</td></tr>
+        <tr><td style="color:#6b7280; font-size:11px; text-transform:uppercase; letter-spacing:0.5px;">IPO Date</td><td>7 February 2024</td></tr>
+        <tr><td style="color:#6b7280; font-size:11px; text-transform:uppercase; letter-spacing:0.5px;">IPO Shares</td><td>525,000,000 shares = 20.79% of total capital</td></tr>
+        <tr><td style="color:#6b7280; font-size:11px; text-transform:uppercase; letter-spacing:0.5px;">HQ</td><td>Gedung Infinia Park Blok A No. 55, Jl. Dr. Saharjo No. 45, South Jakarta</td></tr>
+        <tr><td style="color:#6b7280; font-size:11px; text-transform:uppercase; letter-spacing:0.5px;">Founded</td><td>2006 (as PT Indocare Pacific) · Renamed 2023</td></tr>
+        <tr><td style="color:#6b7280; font-size:11px; text-transform:uppercase; letter-spacing:0.5px;">Sector</td><td>Commercial Services / Hygiene &amp; Sanitation</td></tr>
+        <tr><td style="color:#6b7280; font-size:11px; text-transform:uppercase; letter-spacing:0.5px;">Website</td><td>en.ecocare.id</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- NOTE -->
+  <div style="background:#fff; border-radius:8px; padding:14px 20px; box-shadow:0 1px 4px rgba(0,0,0,0.07); font-size:11.5px; color:#6b7280; line-height:1.8;">
+    <strong style="color:#414141;">Note on Color Values:</strong> Hex codes (#439b4b, #414141, #87c9fe) sourced from Brandfetch.com and confirmed against ecoCare's logo description (Fruit Salad green, Tundora gray, Malibu blue). Website built on Wix — CSS variables prevent direct extraction. Verify against official brand assets before print use.
+  </div>
+
+</div>
+
+<footer>
+  Prepared by <span>Esente Indonesia</span> &nbsp;·&nbsp; Source: ecocare.id &amp; Brandfetch &nbsp;·&nbsp; March 2026
+</footer>
+
+</body>
+</html>

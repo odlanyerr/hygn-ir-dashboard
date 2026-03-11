@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HYGN IJ – Shareholder Data</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Avenir LT W01 85 Heavy', Arial, sans-serif;
+      background: #F4F6F4;
+      color: #374151;
+    }
+
+    /* HEADER */
+    header {
+      background: #414141;
+      color: #fff;
+      padding: 20px 36px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header-left { display: flex; align-items: center; gap: 20px; }
+    .logo-img { height: 68px; width: auto; }
+    .header-divider { width: 1px; height: 44px; background: rgba(255,255,255,0.2); }
+    .header-text h1 { font-size: 16px; font-weight: 700; color: #fff; }
+    .header-text h2 { font-size: 11.5px; font-weight: 400; color: rgba(255,255,255,0.55); margin-top: 3px; }
+    .header-meta { text-align: right; font-size: 11px; color: rgba(255,255,255,0.55); line-height: 1.8; }
+    .header-meta span { display: block; }
+    .date-badge {
+      background: #439b4b; color: #fff;
+      padding: 3px 10px; border-radius: 4px;
+      font-weight: 700; font-size: 11px;
+      display: inline-block; margin-bottom: 4px;
+    }
+
+    /* CARDS */
+    .cards { display: flex; gap: 14px; padding: 20px 36px; flex-wrap: wrap; }
+    .card {
+      background: #fff; border-radius: 8px;
+      padding: 15px 20px; flex: 1; min-width: 155px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+      border-top: 3px solid #439b4b;
+    }
+    .card.blue-accent { border-top-color: #87c9fe; }
+    .card .label { font-size: 10px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
+    .card .value { font-size: 18px; font-weight: 700; color: #414141; }
+    .card .sub   { font-size: 10.5px; color: #9ca3af; margin-top: 3px; }
+
+    /* SECTIONS */
+    .section { padding: 0 36px 26px; }
+    .section-title {
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.9px;
+      color: #439b4b; margin-bottom: 12px;
+      padding-bottom: 6px; border-bottom: 2px solid #439b4b;
+    }
+
+    /* TABLE */
+    table {
+      width: 100%; border-collapse: collapse;
+      font-size: 12.5px; background: #fff;
+      border-radius: 8px; overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    }
+    thead tr { background: #414141; color: #fff; }
+    thead th {
+      padding: 10px 12px; text-align: left;
+      font-size: 10px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap;
+    }
+    thead th.right { text-align: right; }
+    tbody tr { border-bottom: 1px solid #eef0f4; transition: background 0.15s; }
+    tbody tr:hover { background: #EAFAF0; }
+    tbody td { padding: 9px 12px; vertical-align: middle; color: #374151; }
+    tbody td.right { text-align: right; font-variant-numeric: tabular-nums; font-size: 12px; }
+    tbody td.rank { color: #414141; font-weight: 700; font-size: 11px; }
+
+    /* BADGES */
+    .badge { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 600; }
+    .badge-local   { background: #DCFCE7; color: #166534; }
+    .badge-foreign { background: #DBEEFF; color: #0369a1; }
+    .type-badge { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 600; background: #F3F4F6; color: #374151; }
+    .type-fund  { background: #d1f5e0; color: #166534; }
+
+    /* BAR */
+    .bar-wrap { display: flex; align-items: center; gap: 8px; }
+    .bar-bg { flex: 1; height: 6px; background: #E5E7EB; border-radius: 99px; overflow: hidden; min-width: 50px; }
+    .bar-fill { height: 100%; background: #439b4b; border-radius: 99px; }
+    .bar-pct { font-weight: 700; font-size: 12px; min-width: 40px; text-align: right; color: #414141; }
+
+    /* CHARTS */
+    .charts-grid { display: flex; gap: 20px; flex-wrap: wrap; }
+    .chart-card {
+      background: #fff; border-radius: 8px;
+      padding: 20px 22px; flex: 1; min-width: 240px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+      border-top: 3px solid #439b4b;
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .chart-card h4 { font-size: 10px; text-transform: uppercase; color: #6b7280; margin-bottom: 14px; letter-spacing: 0.6px; align-self: flex-start; }
+    .chart-inner { display: flex; align-items: center; gap: 18px; width: 100%; }
+    .donut-wrap { position: relative; flex-shrink: 0; }
+    .donut-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; pointer-events: none; }
+    .donut-center .dc-val { font-size: 15px; font-weight: 800; color: #414141; line-height: 1; }
+    .donut-center .dc-lbl { font-size: 8px; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+    .chart-legend { flex: 1; }
+    .legend-row { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; font-size: 11px; }
+    .legend-row:last-child { margin-bottom: 0; }
+    .legend-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+    .legend-name { flex: 1; color: #374151; line-height: 1.3; }
+    .legend-pct { font-weight: 700; color: #414141; font-size: 11.5px; }
+    svg.donut path { transition: opacity 0.15s; cursor: pointer; }
+    svg.donut path:hover { opacity: 0.8; }
+
+    /* FOOTER */
+    footer { background: #414141; color: rgba(255,255,255,0.5); text-align: center; font-size: 11px; padding: 13px 36px; margin-top: 8px; }
+    footer span { color: #fff; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <img src="ecocare-logo.png" alt="ecoCare Hygiene" class="logo-img">
+    <div class="header-divider"></div>
+    <div class="header-text">
+      <h1>HYGN IJ &nbsp;·&nbsp; PT Ecocare Indo Pasifik Tbk</h1>
+      <h2>Shareholder Structure &amp; Ownership Data &nbsp;|&nbsp; IDX</h2>
+    </div>
+  </div>
+  <div class="header-meta">
+    <span class="date-badge">5 Jun 2025</span>
+    <span>Source: IDX / KSEI Sub-Account Registry</span>
+    <span>Prepared by Esente Indonesia</span>
+  </div>
+</header>
+
+<!-- SUMMARY CARDS -->
+<div class="cards">
+  <div class="card">
+    <div class="label">Est. Total Capital Shares</div>
+    <div class="value">~2.53B</div>
+    <div class="sub">Based on IPO: 525M = 20.79%</div>
+  </div>
+  <div class="card">
+    <div class="label">Tracked Holders (Top 30)</div>
+    <div class="value">30</div>
+    <div class="sub">26 Domestic · 4 Foreign</div>
+  </div>
+  <div class="card blue-accent">
+    <div class="label">Top Holder Concentration</div>
+    <div class="value">~47.5%</div>
+    <div class="sub">Hendrik Yong — 1,200,000,000 sh</div>
+  </div>
+  <div class="card">
+    <div class="label">Top 3 Combined</div>
+    <div class="value">~75.2%</div>
+    <div class="sub">Yong + Thamrin + Yunanda</div>
+  </div>
+  <div class="card">
+    <div class="label">Est. Public Float</div>
+    <div class="value">~20.79%</div>
+    <div class="sub">IPO issuance · Feb 2024</div>
+  </div>
+</div>
+
+<!-- SHAREHOLDER TABLE -->
+<div class="section">
+  <div class="section-title">Top 30 Shareholders — as of 5 Jun 2025</div>
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Investor Name</th>
+        <th>Type</th>
+        <th>L/F</th>
+        <th class="right">Total Shares</th>
+        <th class="right">Chg vs D−1</th>
+        <th class="right">Ownership % (est.)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="rank">1</td>
+        <td><strong>Hendrik Yong</strong></td>
+        <td><span class="type-badge">IND</span></td>
+        <td><span class="badge badge-local">Local</span></td>
+        <td class="right">1,200,000,000</td>
+        <td class="right" style="color:#9ca3af;">—</td>
+        <td class="right"><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:95%"></div></div><span class="bar-pct">~47.5%</span></div></td>
+      </tr>
+      <tr>
+        <td class="rank">2</td>
+        <td><strong>Hermes Thamrin</strong></td>
+        <td><span class="type-badge">IND</span></td>
+        <td><span class="badge badge-local">Local</span></td>
+        <td class="right">500,000,000</td>
+        <td class="right" style="color:#9ca3af;">—</td>
+        <td class="right"><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:41.7%"></div></div><span class="bar-pct">~19.8%</span></div></td>
+      </tr>
+      <tr>
+        <td class="rank">3</td>
+        <td><strong>Rondy Yunanda</strong></td>
+        <td><span class="type-badge">IND</span></td>
+        <td><span class="badge badge-local">Local</span></td>
+        <td class="right">200,000,000</td>
+        <td class="right" style="color:#9ca3af;">—</td>
+        <td class="right"><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:16.7%"></div></div><span class="bar-pct">~7.9%</span></div></td>
+      </tr>
+      <tr>
+        <td class="rank">4</td>
+        <td><strong>Wincent Yunanda</strong></td>
+        <td><span class="type-badge">IND</span></td>
+        <td><span class="badge badge-local">Local</span></td>
+        <td class="right">100,000,000</td>
+        <td class="right" style="color:#9ca3af;">—</td>
+        <td class="right"><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:8.3%"></div></div><span class="bar-pct">~4.0%</span></div></td>
+      </tr>
+      <tr>
+        <td class="rank">5</td>
+        <td><strong>Nini</strong></td>
+        <td><span class="type-badge">IND</span></td>
+        <td><span class="badge badge-local">Local</span></td>
+        <td class="right">49,530,000</td>
+        <td class="right" style="color:#9ca3af;">—</td>
+        <td class="right"><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:4.1%"></div></div><span class="bar-pct">~2.0%</span></div></td>
+      </tr>
+      <tr>
+        <td class="rank">6</td>
+        <td><strong>Bank of Singapore Ltd</strong></td>
+        <td><span class="type-badge">IB</span></td>
+        <td><span class="badge badge-foreign">Foreign</span></td>
+        <td class="right">47,500,000</td>
+        <td class="right" style="color:#9ca3af;">—</td>
+        <td class="right"><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:4.0%"></div></div><span class="bar-pct">~1.9%</span></div></td>
+      </tr>
+      <tr>
+        <td class="rank">7</td>
+        <td><strong>Citibank SG A/C CIMB-KAF Jade</strong></td>
+        <td><span class="type-badge">IB</span></td>
+        <td><span class="badge badge-foreign">Foreign</span></td>
+        <td class="right">42,000,000</td>
+        <td class="right" style="color:#9ca3af;">—</td>
+        <td class="right"><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:3.5%"></div></div><span class="bar-pct">~1.7%</span></div></td>
+      </tr>
+      <tr>
+        <td class="rank">8</td>
+        <td><strong>Reksa Dana Sucor Premium Fund</strong></td>
+        <td><span class="type-badge type-fund">FUND</span></td>
+        <td><span class="badge badge-local">Local</span></td>
+        <td class="right">32,696,600</td>
+        <td class="right" style="color:#9ca3af;">—</td>
+        <td class="right"><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:2.7%"></div></div><span class="bar-pct">~1.3%</span></div></td>
+      </tr>
+      <tr>
+        <td class="rank">9</td>
+        <td style="color:#9ca3af;">(Unnamed — HD001)</td>
+        <td><span class="type-badge">CP</span></td>
+        <td><span class="badge badge-local">Local</span></td>
+        <td class="right">32,333,700</td>
+        <td class="right" style="color:#9ca3af;">—</td>
+        <td class="right"><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:2.7%"></div></div><span class="bar-pct">~1.3%</span></div></td>
+      </tr>
+      <tr>
+        <td class="rank">10</td>
+        <td><strong>Malayan Banking – Ethereal Cap</strong></td>
+        <td><span class="type-badge">IB</span></td>
+        <td><span class="badge badge-foreign">Foreign</span></td>
+        <td class="right">26,950,000</td>
+        <td class="right" style="color:#9ca3af;">—</td>
+        <td class="right"><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:2.3%"></div></div><span class="bar-pct">~1.1%</span></div></td>
+      </tr>
+      <tr>
+        <td class="rank">11</td>
+        <td style="color:#9ca3af;">(Unnamed — HD001)</td>
+        <td><span class="type-badge">CP</span></td>
+        <td><span class="badge badge-local">Local</span></td>
+        <td class="right">26,500,000</td>
+        <td class="right" style="color:#9ca3af;">—</td>
+        <td class="right"><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:2.2%"></div></div><span class="bar-pct">~1.0%</span></div></td>
+      </tr>
+      <tr>
+        <td class="rank">12</td>
+        <td style="color:#9ca3af;">(Unnamed — CC001)</td>
+        <td><span class="type-badge">CP</span></td>
+        <td><span class="badge badge-local">Local</span></td>
+        <td class="right">20,583,500</td>
+        <td class="right" style="color:#dc2626;">−626,400</td>
+        <td class="right"><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:1.7%"></div></div><span class="bar-pct">~0.8%</span></div></td>
+      </tr>
+      <tr>
+        <td class="rank">13</td>
+        <td><strong>Reksa Dana Sucor Equity Prima</strong></td>
+        <td><span class="type-badge type-fund">FUND</span></td>
+        <td><span class="badge badge-local">Local</span></td>
+        <td class="right">19,651,100</td>
+        <td class="right" style="color:#9ca3af;">—</td>
+        <td class="right"><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:1.6%"></div></div><span class="bar-pct">~0.8%</span></div></td>
+      </tr>
+      <tr>
+        <td class="rank">14</td>
+        <td style="color:#9ca3af;">(Unnamed — HD001)</td>
+        <td><span class="type-badge">CP</span></td>
+        <td><span class="badge badge-local">Local</span></td>
+        <td class="right">14,350,000</td>
+        <td class="right" style="color:#9ca3af;">—</td>
+        <td class="right"><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:1.2%"></div></div><span class="bar-pct">~0.6%</span></div></td>
+      </tr>
+      <tr>
+        <td class="rank">15</td>
+        <td><strong>CGS Intl Securities Singapore</strong></td>
+        <td><span class="type-badge">IB</span></td>
+        <td><span class="badge badge-foreign">Foreign</span></td>
+        <td class="right">14,285,800</td>
+        <td class="right" style="color:#dc2626;">−26,000</td>
+        <td class="right"><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:1.2%"></div></div><span class="bar-pct">~0.6%</span></div></td>
+      </tr>
+      <tr>
+        <td class="rank">16</td>
+        <td><strong>Reksa Dana Sucor Equity Fund</strong></td>
+        <td><span class="type-badge type-fund">FUND</span></td>
+        <td><span class="badge badge-local">Local</span></td>
+        <td class="right">14,137,100</td>
+        <td class="right" style="color:#9ca3af;">—</td>
+        <td class="right"><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:1.2%"></div></div><span class="bar-pct">~0.6%</span></div></td>
+      </tr>
+      <tr>
+        <td class="rank">17</td>
+        <td><strong>Su-Hui Tsai</strong></td>
+        <td><span class="type-badge">IND</span></td>
+        <td><span class="badge badge-foreign">Foreign</span></td>
+        <td class="right">14,000,000</td>
+        <td class="right" style="color:#9ca3af;">—</td>
+        <td class="right"><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:1.2%"></div></div><span class="bar-pct">~0.6%</span></div></td>
+      </tr>
+      <tr>
+        <td class="rank">18</td>
+        <td><strong>Doh Jee Ming</strong></td>
+        <td><span class="type-badge">IND</span></td>
+        <td><span class="badge badge-foreign">Foreign</span></td>
+        <td class="right">13,500,000</td>
+        <td class="right" style="color:#9ca3af;">—</td>
+        <td class="right"><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:1.1%"></div></div><span class="bar-pct">~0.5%</span></div></td>
+      </tr>
+      <tr>
+        <td class="rank">19</td>
+        <td><strong>Lifia</strong></td>
+        <td><span class="type-badge">IND</span></td>
+        <td><span class="badge badge-local">Local</span></td>
+        <td class="right">12,000,000</td>
+        <td class="right" style="color:#9ca3af;">—</td>
+        <td class="right"><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:1.0%"></div></div><span class="bar-pct">~0.5%</span></div></td>
+      </tr>
+      <tr>
+        <td class="rank">20</td>
+        <td style="color:#9ca3af;">(Unnamed — BR001)</td>
+        <td><span class="type-badge">CP</span></td>
+        <td><span class="badge badge-local">Local</span></td>
+        <td class="right">9,116,600</td>
+        <td class="right" style="color:#439b4b;">+483,500</td>
+        <td class="right"><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:0.8%"></div></div><span class="bar-pct">~0.4%</span></div></td>
+      </tr>
+      <tr>
+        <td class="rank">21</td>
+        <td style="color:#9ca3af;">(Unnamed — BQ001)</td>
+        <td><span class="type-badge">CP</span></td>
+        <td><span class="badge badge-local">Local</span></td>
+        <td class="right">8,335,000</td>
+        <td class="right" style="color:#439b4b;">+464,900</td>
+        <td class="right"><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:0.7%"></div></div><span class="bar-pct">~0.3%</span></div></td>
+      </tr>
+      <tr>
+        <td class="rank">22</td>
+        <td style="color:#9ca3af;">(Unnamed — HD001)</td>
+        <td><span class="type-badge">CP</span></td>
+        <td><span class="badge badge-local">Local</span></td>
+        <td class="right">7,900,000</td>
+        <td class="right" style="color:#9ca3af;">—</td>
+        <td class="right"><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:0.7%"></div></div><span class="bar-pct">~0.3%</span></div></td>
+      </tr>
+      <tr>
+        <td class="rank">23</td>
+        <td style="color:#9ca3af;">(Unnamed — AN001)</td>
+        <td><span class="type-badge">CP</span></td>
+        <td><span class="badge badge-local">Local</span></td>
+        <td class="right">7,838,600</td>
+        <td class="right" style="color:#dc2626;">−316,300</td>
+        <td class="right"><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:0.7%"></div></div><span class="bar-pct">~0.3%</span></div></td>
+      </tr>
+      <tr>
+        <td class="rank">24</td>
+        <td style="color:#9ca3af;">(Unnamed — HD001)</td>
+        <td><span class="type-badge">CP</span></td>
+        <td><span class="badge badge-local">Local</span></td>
+        <td class="right">7,200,000</td>
+        <td class="right" style="color:#9ca3af;">—</td>
+        <td class="right"><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:0.6%"></div></div><span class="bar-pct">~0.3%</span></div></td>
+      </tr>
+      <tr>
+        <td class="rank">25</td>
+        <td style="color:#9ca3af;">(Unnamed — HD001)</td>
+        <td><span class="type-badge">CP</span></td>
+        <td><span class="badge badge-local">Local</span></td>
+        <td class="right">7,150,000</td>
+        <td class="right" style="color:#9ca3af;">—</td>
+        <td class="right"><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:0.6%"></div></div><span class="bar-pct">~0.3%</span></div></td>
+      </tr>
+      <tr>
+        <td class="rank">26</td>
+        <td style="color:#9ca3af;">(Unnamed — HD001)</td>
+        <td><span class="type-badge">CP</span></td>
+        <td><span class="badge badge-local">Local</span></td>
+        <td class="right">6,900,000</td>
+        <td class="right" style="color:#9ca3af;">—</td>
+        <td class="right"><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:0.6%"></div></div><span class="bar-pct">~0.3%</span></div></td>
+      </tr>
+      <tr>
+        <td class="rank">27</td>
+        <td><strong>Ong Wee Khiang</strong></td>
+        <td><span class="type-badge">IND</span></td>
+        <td><span class="badge badge-foreign">Foreign</span></td>
+        <td class="right">6,900,000</td>
+        <td class="right" style="color:#9ca3af;">—</td>
+        <td class="right"><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:0.6%"></div></div><span class="bar-pct">~0.3%</span></div></td>
+      </tr>
+      <tr>
+        <td class="rank">28</td>
+        <td style="color:#9ca3af;">(Unnamed — HD001)</td>
+        <td><span class="type-badge">CP</span></td>
+        <td><span class="badge badge-local">Local</span></td>
+        <td class="right">6,900,000</td>
+        <td class="right" style="color:#9ca3af;">—</td>
+        <td class="right"><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:0.6%"></div></div><span class="bar-pct">~0.3%</span></div></td>
+      </tr>
+      <tr>
+        <td class="rank">29</td>
+        <td><strong>PT Sehat Bertumbuh Bersama</strong></td>
+        <td><span class="type-badge">CP</span></td>
+        <td><span class="badge badge-local">Local</span></td>
+        <td class="right">6,900,000</td>
+        <td class="right" style="color:#9ca3af;">—</td>
+        <td class="right"><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:0.6%"></div></div><span class="bar-pct">~0.3%</span></div></td>
+      </tr>
+      <tr>
+        <td class="rank">30</td>
+        <td style="color:#9ca3af;">(Unnamed — HD001)</td>
+        <td><span class="type-badge">CP</span></td>
+        <td><span class="badge badge-local">Local</span></td>
+        <td class="right">4,745,400</td>
+        <td class="right" style="color:#9ca3af;">—</td>
+        <td class="right"><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:0.4%"></div></div><span class="bar-pct">~0.2%</span></div></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- OWNERSHIP CHARTS -->
+<div class="section">
+  <div class="section-title">Ownership Structure Breakdown</div>
+  <div class="charts-grid" id="chartsGrid"></div>
+</div>
+
+<script>
+  const CHARTS = [
+    {
+      title: 'By Holder (Top 5 + Others)',
+      centerVal: '47.5%',
+      centerLbl: 'Top Holder',
+      slices: [
+        { label: 'Hendrik Yong',       pct: 47.52, color: '#414141' },
+        { label: 'Hermes Thamrin',     pct: 19.80, color: '#439b4b' },
+        { label: 'Rondy Yunanda',      pct: 7.92,  color: '#87c9fe' },
+        { label: 'Wincent Yunanda',    pct: 3.96,  color: '#a5d6a7' },
+        { label: 'Nini',               pct: 1.96,  color: '#6ee7b7' },
+        { label: 'Other Top 30',       pct: 16.25, color: '#d1fae5' },
+        { label: 'Public / Float',     pct: 2.59,  color: '#E5E7EB' },
+      ]
+    },
+    {
+      title: 'By Local vs Foreign',
+      centerVal: '90.9%',
+      centerLbl: 'Local',
+      slices: [
+        { label: 'Local (Indonesia)',  pct: 90.87, color: '#414141' },
+        { label: 'Foreign',           pct: 6.54,  color: '#87c9fe' },
+        { label: 'Public / Other',    pct: 2.59,  color: '#E5E7EB' },
+      ]
+    },
+    {
+      title: 'By Investor Type',
+      centerVal: '83%',
+      centerLbl: 'Individual',
+      slices: [
+        { label: 'Individual (IND)',       pct: 83.02, color: '#414141' },
+        { label: 'Foreign Institution',    pct: 4.11,  color: '#87c9fe' },
+        { label: 'Mutual Fund (FUND)',     pct: 3.70,  color: '#439b4b' },
+        { label: 'Domestic Corporate/CP',  pct: 6.58,  color: '#a5d6a7' },
+        { label: 'Public / Float',         pct: 2.59,  color: '#E5E7EB' },
+      ]
+    }
+  ];
+
+  function polarToXY(cx, cy, r, angleDeg) {
+    const rad = (angleDeg - 90) * Math.PI / 180;
+    return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+  }
+
+  function donutSlicePath(cx, cy, R, r, startDeg, endDeg) {
+    const s1 = polarToXY(cx, cy, R, startDeg);
+    const e1 = polarToXY(cx, cy, R, endDeg);
+    const s2 = polarToXY(cx, cy, r, endDeg);
+    const e2 = polarToXY(cx, cy, r, startDeg);
+    const large = (endDeg - startDeg) > 180 ? 1 : 0;
+    return [`M ${s1.x} ${s1.y}`, `A ${R} ${R} 0 ${large} 1 ${e1.x} ${e1.y}`,
+            `L ${s2.x} ${s2.y}`, `A ${r} ${r} 0 ${large} 0 ${e2.x} ${e2.y}`, 'Z'].join(' ');
+  }
+
+  function buildChart(chart) {
+    const size = 160, cx = 80, cy = 80, R = 68, r = 42;
+    const total = chart.slices.reduce((s, d) => s + d.pct, 0);
+    let paths = '', angle = 0;
+    chart.slices.forEach(slice => {
+      const sweep = (slice.pct / total) * 360;
+      const end = angle + sweep;
+      const gap = 1.2;
+      paths += `<path d="${donutSlicePath(cx, cy, R, r, angle + gap/2, end - gap/2)}" fill="${slice.color}" title="${slice.label}: ${slice.pct}%"/>`;
+      angle = end;
+    });
+    const legendRows = chart.slices.map(s =>
+      `<div class="legend-row"><div class="legend-dot" style="background:${s.color}"></div>
+       <span class="legend-name">${s.label}</span><span class="legend-pct">${s.pct}%</span></div>`
+    ).join('');
+    return `<div class="chart-card"><h4>${chart.title}</h4>
+      <div class="chart-inner">
+        <div class="donut-wrap">
+          <svg class="donut" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">${paths}</svg>
+          <div class="donut-center"><div class="dc-val">${chart.centerVal}</div><div class="dc-lbl">${chart.centerLbl}</div></div>
+        </div>
+        <div class="chart-legend">${legendRows}</div>
+      </div></div>`;
+  }
+
+  document.getElementById('chartsGrid').innerHTML = CHARTS.map(buildChart).join('');
+</script>
+
+<!-- NOTES -->
+<div class="section">
+  <div class="section-title">Notes</div>
+  <div style="background:#fff; border-radius:8px; padding:16px 22px; font-size:12.5px; line-height:1.8; box-shadow:0 1px 4px rgba(0,0,0,0.07); color:#374151;">
+    <ul style="padding-left:18px;">
+      <li><strong style="color:#414141;">IND</strong> = Individual &nbsp;|&nbsp; <strong style="color:#414141;">IB</strong> = Institution/Bank &nbsp;|&nbsp; <strong style="color:#414141;">FUND</strong> = Mutual Fund &nbsp;|&nbsp; <strong style="color:#414141;">CP</strong> = Corporate/Other</li>
+      <li><strong style="color:#414141;">L</strong> = Local (Indonesia) &nbsp;|&nbsp; <strong style="color:#414141;">A</strong> = Foreign (Asing)</li>
+      <li>Top 3 founders (Hendrik Yong, Hermes Thamrin, Rondy Yunanda) hold a combined <strong>~75.2%</strong> of total capital.</li>
+      <li>Foreign holders include Bank of Singapore, Citibank SG/CIMB-KAF, Malayan Banking, CGS Intl, and individual foreign investors.</li>
+      <li><strong>Movers on 5 Jun 2025:</strong> Holder #12 (CC001) −626,400 · Holder #20 (BR001) +483,500 · Holder #21 (BQ001) +464,900 · Holder #23 (AN001) −316,300 · CGS Intl −26,000.</li>
+      <li>Unnamed holders identified by sub-account codes (HD001, CC001, BR001, BQ001, AN001). Custodian: Henan Putihrai (HD001) dominant at ~76% of registry.</li>
+      <li>All ownership % are <strong>estimates</strong> based on total capital back-calculated from IPO data (525M shares = 20.79%). Verify against official IDX/KSEI disclosures.</li>
+      <li>Data sourced from KSEI sub-account registry. Date range covered: <strong>13 Feb – 5 Jun 2025</strong>.</li>
+    </ul>
+  </div>
+</div>
+
+<footer>
+  Prepared by <span>Esente Indonesia</span> &nbsp;·&nbsp; Data Date: <span>5 Jun 2025</span> &nbsp;·&nbsp; Source: IDX / KSEI &nbsp;·&nbsp; For Internal Use Only
+</footer>
+
+</body>
+</html>
